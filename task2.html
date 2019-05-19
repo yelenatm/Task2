@@ -1,10 +1,11 @@
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>CodePen - Switch Case Javascript</title>
+<title>Все возможные ходы шахматного коня</title>
 <script src="https://static.codepen.io/assets/common/stopExecutionOnTimeout-de7e2ef6bfefd24b79a3f68b414b87b8db5b08439cac3f1012092b2290c719cd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script>
@@ -22,34 +23,25 @@
 <input id="chessKnight" type="text">
 <button id="button">Ok</button><br/>
 <label><strong>Возможные варианты хода:</strong></label><br/>
-<div id="result"></div>
+<div id="output"></div>
 
 <script id="rendered-js">
-let form = document.getElementById("chessKnight")
-let knightBtn = document.getElementById("button")
-let result = document.getElementById("result")
-knightBtn.addEventListener("click", showPossibleMoves)
+const knight = document.getElementById("chessKnight");
+const btn = document.getElementById("button");
+const output = document.getElementById("output");
+btn.addEventListener("click", () => {
+    const moves = chessKnight(knight.value);
+    output.textContent = `${moves}`;
+});
 
 
-function showPossibleMoves() {
-  let cell = form.value
-  // convert letter to number
-  let x = parseInt(cell.substring(0,1).charCodeAt() - 64)
-  let y = parseInt(cell.substring(1,2))
-  
-  let knightMoves = [
-    {x:2, y:-1},{x:2, y:1},{x:1, y:-2},{x:1, y:2},
-    {x:-2, y:-1},{x:-2, y:1},{x:-1, y:-2},{x:-1, y:2}
-  ]
-  
-  let possibleMoves = []
-  for(let m of knightMoves) {
-    let row = String.fromCharCode(x + m.x + 64)
-    let column = y+m.y
-    possibleMoves.push(row + "" + column)
-  }
-  console.log('Possible Coordinates:', possibleMoves);
-  result.innerHTML = possibleMoves.toString()
+function chessKnight(pos) {
+  pos = pos[1]-1 + ("ABCDEFGH".indexOf(pos[0].toUpperCase()) << 4); 
+
+  return [-0x12, -0x21, -0x1F, -0x0E, 0x12, 0x21, 0x1F, 0x0E] // Все возможные варианты ходов
+      .map(i => pos+i) // Добавить на текущую позицию
+      .filter(i => !(i & 0x88)) // Фильтр значений
+      .map(i => "ABCDEFGH"[i>>4] + ((i & 7)+1)); // Вывести результат через коды символов
 }
 
     </script>
